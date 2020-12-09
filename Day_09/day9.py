@@ -1,7 +1,6 @@
 from itertools import combinations
 
-with open('data.txt', 'r') as f:
-    input = list(map(int, f.readlines()))
+input = [int(x) for x in open('data.txt')]
 
 # Part 1
 for i in range(25, len(input)):
