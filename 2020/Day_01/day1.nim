@@ -1,5 +1,4 @@
-import strutils
-import combinations
+import strutils, combinations
 
 let file = readFile("data.txt").splitLines()
 
