@@ -11,7 +11,8 @@ from array import array
 from parse import *
 from timeit import default_timer as timer
 from aocdays import AoCDay
-day = AoCDay(2020, 1)
+from pathlib import Path
+day = AoCDay(Path.cwd().parent.name, Path(__file__).name[3:-3])
 day.start = timer()
 
 # Your code starts here...

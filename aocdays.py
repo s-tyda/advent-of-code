@@ -1,6 +1,7 @@
 from rich.console import Console
 from rich.table import Table
 
+
 class AoCDay:
     year = 0
     day = 0
