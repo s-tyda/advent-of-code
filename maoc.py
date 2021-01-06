@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 from datetime import datetime
-import colorama
-import getpass
-import mechanize
 import time
-from bs4 import BeautifulSoup
 import sys
 import os.path
 import subprocess
-from termcolor import colored
 from configparser import ConfigParser
 from pathlib import Path
 from cryptography.fernet import Fernet
@@ -18,6 +13,13 @@ from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
+from rich.console import Console
+from rich.table import Table
+from rich import print
+from rich.panel import Panel
+from rich.text import Text
+import textwrap
+from tkinter import Tk
 
 
 # def help_f(test):
@@ -149,15 +151,65 @@ def initialize(year):
     check_year(year, 0)
 
 
-def read_f(year, day):
-    return "Checking year " + str(year) + " and day " + str(day)
+def get_childs(element):
+    return element.find_elements_by_xpath("./child::*")
+
+
+def read_day(year, day):
+    open_day_page(year, day)
+    text = driver.find_elements_by_class_name("day-desc")
+    for part in text:
+        childs = get_childs(part)
+        for child in childs:
+            desc = str(child.text)
+            if child.tag_name == "pre":
+                print(desc)
+                print()
+            elif child.tag_name == "ul":
+                rows = get_childs(child)
+                for row in rows:
+                    row = textwrap.wrap(row.text, width=75, initial_indent="  - ", subsequent_indent="    ")
+                    for i in row:
+                        print(Text(i))
+                print()
+            else:
+                if desc.startswith("---"):
+                    print(Text(desc, style="red"))
+                else:
+                    desc = textwrap.wrap(desc, width=75)
+                    for i in desc:
+                        print(Text(i))
+                print()
+
+
+def get_test_data(year, day):
+    open_day_page(year, day)
+    data = driver.find_elements_by_css_selector("$0")
+    print(data)
+
+
+def send_answer(year, day, answer):
+    open_day_page(year, day)
+    inputs = driver.find_elements_by_tag_name("input")
+    form = inputs[1]
+    form.click()
+    form.send_keys(answer)
+    form.submit()
+    output = driver.find_element_by_tag_name("article")
+    output = str(get_childs(output)[0].text)
+    output = textwrap.wrap(output, width=75)
+    for i in output:
+        words = i.split()
+        if words[1] == "not":
+            print(Text.assemble((i[:28], "bright_red"), i[28:]))
+        elif words[1] == "the":
+            print(Text.assemble((i[:24], "bright_green"), i[24:]))
+            update_day(year, day, userinfo)
+        else:
+            print(i)
 
 
 def test_f(file, part, year, day):
-    return "File: " + str(file) + " part: " + str(part) + " year " + str(year) + " and day " + str(day)
-
-
-def send_f(file, part, year, day):
     return "File: " + str(file) + " part: " + str(part) + " year " + str(year) + " and day " + str(day)
 
 
@@ -176,7 +228,6 @@ class CLI(object):
 
     @staticmethod
     def init(year=get_current_year()):
-        # return "Initializaing year " + str(year)
         return initialize(year)
 
     @staticmethod
@@ -192,28 +243,40 @@ class CLI(object):
         return check_year(year, day)
 
     @staticmethod
-    def test(file, part, year=get_current_year(), day=get_current_day()):
+    def test(file, part, year=get_current_year(), day=0):
+        if day == 0:
+            day = get_next_day(year, userinfo)
         return test_f(file, part, year, day)
 
     @staticmethod
-    def t(file, part, year=get_current_year(), day=get_current_day()):
+    def t(file, part, year=get_current_year(), day=0):
+        if day == 0:
+            day = get_next_day(year, userinfo)
         return test_f(file, part, year, day)
 
     @staticmethod
-    def send(file, part, year=get_current_year(), day=get_current_day()):
-        return send_f(file, part, year, day)
+    def send(answer, year=get_current_year(), day=0):
+        if day == 0:
+            day = get_next_day(year, userinfo)
+        return send_answer(year, day, answer)
 
     @staticmethod
-    def s(file, part, year=get_current_year(), day=get_current_day()):
-        return send_f(file, part, year, day)
+    def s(answer, year=get_current_year(), day=0):
+        if day == 0:
+            day = get_next_day(year, userinfo)
+        return send_answer(year, day, answer)
 
     @staticmethod
-    def read(year=get_current_year(), day=get_current_day()):
-        return read_f(year, day)
+    def read(year=get_current_year(), day=0):
+        if day == 0:
+            day = get_next_day(year, userinfo)
+        return read_day(year, day)
 
     @staticmethod
-    def r(year=get_current_year(), day=get_current_day()):
-        return read_f(year, day)
+    def r(year=get_current_year(), day=0):
+        if day == 0:
+            day = get_next_day(year, userinfo)
+        return read_day(year, day)
 
     @staticmethod
     def leaderboard(update=False, all=False, list=False):
@@ -295,7 +358,7 @@ def print_config(key, user_config):
     f = open(user_config, 'r')
     for p in f:
         if p.startswith('[') or p.endswith(']'):
-            print(colored(p, 'red', attrs=['bold']), end="")
+            print(f"[bold red]{p}[/bold red]", end="")
         else:
             print(p, end="")
     file_encrypt(key, user_config)
@@ -414,9 +477,6 @@ if __name__ == '__main__':
 
     driver = login(cookie)
     # fire.Fire(CLI)
-    # colorama.init(strip=False)
-    # global OK
-    # OK = colored("OK", 'green', attrs=['bold'])
     # global args
     # args = sys.argv
     #

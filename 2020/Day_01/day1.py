@@ -5,8 +5,9 @@ from timeit import default_timer as timer
 from rich.console import Console
 from rich.table import Table
 from rich import print
-day = AoCDay(2020, 1)
+from pathlib import Path
 
+day = AoCDay(Path.cwd().parent.name, Path(__file__).name[3:-3])
 
 # Solution 1 - creating reusable function
 def execute(n):
