@@ -19,9 +19,12 @@ class AoCDay:
     def lines(self):
         return open(self.input).readlines()
 
-    def print(self):
+    def print(self, one_line = False):
         console = Console()
-        table = Table(show_header=True, header_style="bold magenta")
+        if not one_line:
+            table = Table(title=f"Year {self.year} day {self.day} simple solution:", show_header=True, header_style="bold magenta")
+        else:
+            table = Table(title=f"Year {self.year} day {self.day} one-liner solution:", show_header=True, header_style="bold magenta")
         table.add_column("Part 1", justify="center")
         table.add_column("Part 2", justify="center")
         table.add_column("Execution time", justify="center")

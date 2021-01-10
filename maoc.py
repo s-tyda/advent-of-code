@@ -422,9 +422,9 @@ def get_pic(year):
 
 def get_next_day(year, userinfo):
     stats = userinfo[f"{year}"].split(",")
-    for i in stats:
+    for idx, i in enumerate(stats):
         if i != "2":
-            return i
+            return idx+1
     print(f"All days in year {year} are completed!")
     sys.exit(0)
 
@@ -476,7 +476,8 @@ if __name__ == '__main__':
     stats = userinfo["2020"].split(",")
 
     driver = login(cookie)
-    # fire.Fire(CLI)
+    fire.Fire(CLI)
+    # print_config(key, user_config)
     # global args
     # args = sys.argv
     #
