@@ -131,7 +131,6 @@ def check_day(year, day):
 
 
 def check_year(year, day):
-    login(cookie)
     if day == 0:
         for i in range(1, 26):
             check_day(year, i)
@@ -182,10 +181,63 @@ def read_day(year, day):
                 print()
 
 
-def get_test_data(year, day):
-    open_day_page(year, day)
-    data = driver.find_elements_by_css_selector("$0")
-    print(data)
+def get_test(year, day, n, part, mode):
+    n = add_zero(n)
+    driver.get(f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_{day}/Part_{part}/test{n}_{mode}.txt")
+    test = str(driver.find_element_by_tag_name("body").text)
+    if test == "404: Not Found":
+        return False
+    else:
+        return test
+
+
+def add_zero(n):
+    if n < 10:
+        return "0" + str(n)
+    else:
+        return n
+
+
+# def get_test_day(year, day):
+#     day = add_zero(day)
+#     make_missing_directories(f"Test_Inputs/{year}/Day_{day}/Part_1")
+#     make_missing_directories(f"Test_Inputs/{year}/Day_{day}/Part_2")
+#     i = 1
+#     check = get_test(year, day, i, 1, "i")
+#     while check:
+#         if i < 10:
+#             driver.get(
+#                 f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_0{day}/Part_1/test0{i}_i.txt")
+#             driver.get(
+#                 f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_0{day}/Part_1/test0{i}_o.txt")
+#         else:
+#             driver.get(
+#                 f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_0{day}/Part_1/test{i}_i.txt")
+#             driver.get(
+#                 f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_0{day}/Part_1/test{i}_o.txt")
+#     i = 1
+#     check = get_test(year, day, i, 2, "i")
+#     while check:
+#         if i < 10:
+#             driver.get(
+#                 f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_0{day}/Part_2/test0{i}_i.txt")
+#             driver.get(
+#                 f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_0{day}/Part_2/test0{i}_o.txt")
+#         else:
+#             driver.get(
+#                 f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_0{day}/Part_2/test{i}_i.txt")
+#             driver.get(
+#                 f"https://raw.githubusercontent.com/s-tyda/Advent-of-Code/master/Test_Inputs/{year}/Day_0{day}/Part_2/test{i}_o.txt")
+#     with open(data, "w") as file:
+#         file.write(get_text_input())
+
+
+# def get_test_data(year, day):
+#     if day == 0:
+#         for i in range(1, 26):
+#             get_test_day(year, i)
+#     else:
+#         get_test_day(year, day)
 
 
 def send_answer(year, day, answer):
@@ -443,7 +495,7 @@ if __name__ == '__main__':
 
     if not os.path.exists(user_config):
         print(
-            "It seems it's your first time using tichy script. You have"
+            "It seems it's your first time using maoc script. You have"
             " to set your config to proceed.\n"
         )
         cookie = input("Your session cookie: ")
