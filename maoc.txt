@@ -1,0 +1,22 @@
+maoc	init/i											//inicjalizuje folder dla bieżącego roku	
+	init/i		-y/--year	year							//inicjalizuje folder dla roku "year"
+	check/c											//sprawdza czy każdy dzień w bieżącym roku ma input
+	check/c		-y/--year	year							//sprawdza czy każdy dzień w roku "year" ma input
+	check/c		-y/--year	year	-d/--day	day				//sprawdza czy dzień "day" w roku "year" ma input
+	check/c		-d/--day	day							//sprawdza czy dzień "day" w bieżącym roku ma input
+	test/t		file		part							//testuje plik "file" w części "part" kolejnego nierozwiązanego dnia bieżącego roku
+	test/t		file		part	-y/--year	year				//testuje plik "file" w części "part" kolejnego nierozwiązanego dnia roku "year"
+	test/t		file		part	-d/--day	day	-y/--year	year	//testuje plik "file" w części "part" dnia "day" roku "year"
+	test/t		file		part	-d/--day	day				//testuje plik "file" w części "part" dnia "day" bieżącego roku
+	send/s		file		part							//wysyła rozwiązanie "file" części "part" kolejnego nierozwiązanego dnia bieżącego roku
+	send/s		file		part	-y/--year	year				//wysyła rozwiązanie "file" części "part" kolejnego nierozwiązanego dnia roku "year"
+	send/s		file		part	-d/--day	day	-y/--year	year	//wysyła rozwiązanie "file" części "part" dnia "day" roku "year"
+	send/s		file		part	-d/--day	day				//wysyła rozwiązanie "file" części "part" dnia "day" bieżącego roku
+	read/r											//czyta treść kolejnego nierozwiązanego zadania bieżącego roku
+	read/r		-y/--year	year							//czyta treść kolejnego nierozwiązanego zadania roku "year"
+	read/r		-y/--year	year	-d/--day	day				//czyta treść zadania dnia "day" roku "year"
+	read/r		-d/--day	day							//czyta treść zadania dnia "day" bieżącego roku
+	leaderboard/l										//pokazuje dostępne rankingi, prosi o wybranie któregoś, potem pokazuje jego stan
+	leaderboard/l	-u/--update								//aktualizuje listę rankingów w których uczestniczy użytkownik
+	leaderboard/l	-a/--all								//pokazuje stany wszystkich rankingów w których znajduje się gracz
+	leaderboard/l	-l/list									//listuje wszystkie rankingi w których uczestniczy gracz (z odpowiednimi miejscami)
